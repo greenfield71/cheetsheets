@@ -1,0 +1,31 @@
+			SSI (Server-side includes)
+			
+			
+			printenv
+			<!--#printenv -->
+			
+			
+			config
+			<!--#config errmsg="Error!" -->
+			
+			
+			
+			echo 
+			DOCUMENT_NAME: the current file's name
+    			DOCUMENT_URI: the current file's URI
+    			LAST_MODIFIED: timestamp of the last modification of the current 				 	 	 	 				
+    		 	file
+    			DATE_LOCAL: local server time
+    			
+    			<!--#echo var="DOCUMENT_NAME" var="DATE_LOCAL" -->
+    			
+    			
+    			exec
+    			<!--#exec cmd="whoami" -->
+    			
+    			
+    			include
+    			<!--#include virtual="index.html" -->
+    			
+    			
+    			

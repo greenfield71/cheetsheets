@@ -1,0 +1,81 @@
+
+### 1. HTTP Methodlar bilan ishlash
+
+API bilan ishlashda metodlarni to‘g‘ri tanlash muhim:
+
+* **GET (Ma'lumot olish):**
+`curl -X GET "[https://api.example.com/data](https://api.example.com/data)"`
+* **POST (Ma'lumot yuborish):**
+`curl -X POST "[https://api.example.com/users](https://api.example.com/users)" -d "name=Saidislom&role=admin"`
+* **PUT/PATCH (Ma'lumotni yangilash):**
+`curl -X PUT "[https://api.example.com/users/1](https://api.example.com/users/1)" -d "name=NewName"`
+* **DELETE (O‘chirish):**
+`curl -X DELETE "[https://api.example.com/users/1](https://api.example.com/users/1)"`
+
+---
+
+### 2. Headerlar va Kontent turlari
+
+API-lar ko‘pincha JSON formatini talab qiladi.
+
+* **JSON yuborish (Content-Type):**
+```bash
+curl -X POST https://api.example.com/data \
+-H "Content-Type: application/json" \
+-d '{"id": 1, "name": "Saidislom"}'
+
+```
+
+
+* **Avtorizatsiya (Token):**
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN_HERE" https://api.example.com/protected
+
+```
+
+
+
+---
+
+### 3. Cookie bilan ishlash
+
+Login jarayonlari yoki sessiyani saqlash uchun juda foydali:
+
+* **Cookie-ni saqlab qolish:** Serverdan kelgan cookie-larni faylga yozish (`-c` yoki `--cookie-jar`):
+`curl -c cookies.txt [https://example.com/login](https://example.com/login)`
+* **Cookie-dan foydalanish:** Saqlangan cookie-larni yuborish (`-b` yoki `--cookie`):
+`curl -b cookies.txt [https://example.com/dashboard](https://example.com/dashboard)`
+* **Cookie-ni qo‘lda yuborish:**
+`curl -H "Cookie: session_id=abc12345" [https://example.com/](https://example.com/)`
+
+---
+
+### 4. Fayllar bilan ishlash (Upload)
+
+API orqali fayl yuklash uchun `-F` (form-data) ishlatiladi:
+
+`curl -F "file=@/path/to/your/file.png" [https://api.example.com/upload](https://api.example.com/upload)`
+
+---
+
+### 5. Yordamchi parametrlarning kuchi
+
+* **Ma'lumotni faylga saqlash:**
+`curl -O [https://example.com/file.zip](https://example.com/file.zip)` (fayl nomini o‘zi saqlaydi)
+`curl -o local_name.zip [https://example.com/file.zip](https://example.com/file.zip)` (o‘zingiz nom berasiz)
+* **Follow Redirect:** Agar URL boshqa joyga yo‘naltirsa, uni kuzatish:
+`curl -L [https://example.com](https://example.com)`
+* **Timeout:** So‘rov qancha vaqt kutishini belgilash (sekundlarda):
+`curl --max-time 10 [https://example.com](https://example.com)`
+
+---
+
+### Professional maslahat: `curl` dan `jq` ga
+
+API so‘rovlaridan keladigan JSON juda tartibsiz bo‘ladi. Uni chiroyli ko‘rinishga keltirish uchun Linux/Kali terminalida **`jq`** vositasidan foydalaning:
+
+`curl -s [https://api.example.com/users](https://api.example.com/users) | jq`
+
+---
+
+

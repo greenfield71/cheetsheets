@@ -1,0 +1,53 @@
+# ==========================================
+# SMBCLIENT CHEATSHEET
+# ==========================================
+
+# 1. ULUSHLARNI ANIQLASH (ENUMERATION)
+# ------------------------------------------
+# Belgilangan foydalanuvchi orqali ulushlarni ko'rish
+smbclient -L //IP_MANZIL -U foydalanuvchi
+
+# Null Session (Parolsiz anonim ulanish)
+smbclient -L //IP_MANZIL -N
+
+# Bo'sh foydalanuvchi va bo'sh parol orqali
+smbclient -L //IP_MANZIL -U ""
+
+
+# 2. TARMOQ ULUSHIGA ULANISH (CONNECTING)
+# ------------------------------------------
+# Standart ulanish
+smbclient //IP_MANZIL/ULUSH -U foydalanuvchi
+
+# Parolsiz ulanish (Null Session)
+smbclient //IP_MANZIL/ULUSH -N
+
+# Parolni to'g'ridan-to'g'ri kiritish (tezkor ulanish)
+smbclient //IP_MANZIL/ULUSH -U foydalanuvchi%parol
+
+# IPC$ (Inter-Process Communication) ga ulanish
+smbclient //IP_MANZIL/IPC$ -N
+
+
+# 3. INTERAKTIV QOBIQ (SMB SHELL) BUYRUQLARI
+# ------------------------------------------
+ls             # Joriy papkadagi fayl va kataloglarni ko'rish
+cd papka_nomi  # Boshqa papkaga o'tish
+get fayl.txt   # Serverdan bitta faylni yuklab olish
+put fayl.txt   # Serverga o'z tizimingizdan fayl yuklash
+mget *         # Barcha fayllarni birdaniga yuklab olish
+prompt         # mget dagi Yes/No so'rovlarini o'chirish
+recurse ON     # Ostki kataloglar va fayllarni zanjirli qamrab olish
+exit           # SMB ulanishini to'xtatish (yoki quit)
+
+
+# 4. PENTESTING VA AVTOMATLASHTIRISH
+# ------------------------------------------
+# Shell'ga kirmasdan to'g'ridan-to'g'ri bitta buyruqni bajarish
+smbclient -c 'ls' //IP_MANZIL/ULUSH -U user%pass
+
+# 139-port (NetBIOS) orqali ulanishga majburlash (agar 445 yopiq bo'lsa)
+smbclient -p 139 //IP_MANZIL/ULUSH
+
+# Xatoliklarni chuqurroq tahlil qilish uchun log darajasini oshirish
+smbclient -N -O "log level = 3" //IP_MANZIL/ULUSH
