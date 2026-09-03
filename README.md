@@ -1,10 +1,10 @@
-# 📚 Penetration Testing & Security Cheatsheets
+# 📚 Penetration Testing & Cybersecurity Cheatsheets
 
-Tezkor foydalanish uchun xavfsizlik, web zaifliklar, inyeksiyalar va vositalar bo'yicha cheatsheet'lar to'plami.
+A curated collection of quick-reference guides, commands, payloads, and cheat sheets for web application security, penetration testing, injection attacks, and ethical hacking tools.
 
 ---
 
-## 📁 Mundarija (Table of Contents)
+## 📁 Table of Contents
 
 ### 🔐 1. Authentication & Bruteforce (`auth_and_bruteforce/`)
 * [Login Brute Forcing - cheatsheet.pdf](auth_and_bruteforce/Login%20Brute%20Forcing%20-%20cheatsheet.pdf)
@@ -14,7 +14,7 @@ Tezkor foydalanish uchun xavfsizlik, web zaifliklar, inyeksiyalar va vositalar b
 * [Cross-Site_Scripting.txt](client_side/Cross-Site_Scripting.txt)
 * [XSS.txt](client_side/XSS.txt)
 
-### 💉 3. Injections (`injections/`)
+### 💉 3. Injection Attacks (`injections/`)
 * [Command_injection.pdf](injections/Command_injection.pdf)
 * [database_injection.txt](injections/database_injection.txt)
 * [oscommandinjection.txt](injections/oscommandinjection.txt)
@@ -31,7 +31,7 @@ Tezkor foydalanish uchun xavfsizlik, web zaifliklar, inyeksiyalar va vositalar b
 * [Server-side Attacks - cheatsheet.pdf](server_side_and_web_attacks/Server-side%20Attacks%20-%20cheatsheet.pdf)
 * [Web Attacks - cheatsheet.pdf](server_side_and_web_attacks/Web%20Attacks%20-%20cheatsheet.pdf)
 
-### 🛠️ 5. Tools & Misc (`tools_and_misc/`)
+### 🛠️ 5. Tools & Utilities (`tools_and_misc/`)
 * [alias_saidislom](tools_and_misc/alias_saidislom)
 * [attacking_common_applications.md](tools_and_misc/attacking_common_applications.md)
 * [curl.txt](tools_and_misc/curl.txt)
@@ -39,3 +39,8 @@ Tezkor foydalanish uchun xavfsizlik, web zaifliklar, inyeksiyalar va vositalar b
 * [payload](tools_and_misc/payload)
 * [smbclient.txt](tools_and_misc/smbclient.txt)
 * [writeup](tools_and_misc/writeup)
+
+---
+
+> [!NOTE]
+> **Disclaimer:** All material in this repository is intended strictly for authorized security auditing, penetration testing, and educational purposes.
