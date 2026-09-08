@@ -30,6 +30,7 @@ A curated collection of quick-reference guides, commands, payloads, and cheat sh
 * [File Upload Attacks - cheatsheet.pdf](server_side_and_web_attacks/File%20Upload%20Attacks%20-%20cheatsheet.pdf)
 * [Server-side Attacks - cheatsheet.pdf](server_side_and_web_attacks/Server-side%20Attacks%20-%20cheatsheet.pdf)
 * [Web Attacks - cheatsheet.pdf](server_side_and_web_attacks/Web%20Attacks%20-%20cheatsheet.pdf)
+* [web_application_attacks_cheatsheet.md](server_side_and_web_attacks/web_application_attacks_cheatsheet.md)
 
 ### 🛠️ 5. Tools & Utilities (`tools_and_misc/`)
 * [alias_saidislom](tools_and_misc/alias_saidislom)
