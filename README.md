@@ -12,6 +12,7 @@ A curated collection of quick-reference guides, commands, payloads, and cheat sh
 
 ### 💻 2. Client-Side Attacks (`client_side/`)
 * [Cross-Site_Scripting.txt](client_side/Cross-Site_Scripting.txt)
+* [microsoft_word_macros.md](client_side/microsoft_word_macros.md)
 * [XSS.txt](client_side/XSS.txt)
 
 ### 💉 3. Injection Attacks (`injections/`)
