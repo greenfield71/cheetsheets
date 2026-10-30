@@ -1,0 +1,57 @@
+using System;
+using System.Runtime.InteropServices;
+
+class EnablePrivilegeDemo
+{
+    [DllImport("advapi32.dll", SetLastError = true)]
+    static extern bool OpenProcessToken(IntPtr ProcessHandle, uint DesiredAccess, out IntPtr TokenHandle);
+
+    [DllImport("advapi32.dll", SetLastError = true)]
+    static extern bool LookupPrivilegeValue(string lpSystemName, string lpName, out LUID lpLuid);
+
+    [DllImport("advapi32.dll", SetLastError = true)]
+    static extern bool AdjustTokenPrivileges(IntPtr TokenHandle, bool DisableAllPrivileges,
+        ref TOKEN_PRIVILEGES NewState, uint BufferLength, IntPtr PreviousState, IntPtr ReturnLength);
+
+    [DllImport("kernel32.dll")]
+    static extern IntPtr GetCurrentProcess();
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct LUID { public uint LowPart; public int HighPart; }
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct TOKEN_PRIVILEGES
+    {
+        public uint PrivilegeCount;
+        public LUID Luid;
+        public uint Attributes;
+    }
+
+    const uint TOKEN_ADJUST_PRIVILEGES = 0x0020;
+    const uint TOKEN_QUERY = 0x0008;
+    const uint SE_PRIVILEGE_ENABLED = 0x00000002;
+
+    static void Main(string[] args)
+    {
+        
+        string privilegeName = "SeChangeNotifyPrivilege"; // mana shu qism ozgartiriladi =================
+
+        IntPtr tokenHandle;
+        OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, out tokenHandle);
+
+        LUID luid;
+        LookupPrivilegeValue(null, privilegeName, out luid);
+
+        TOKEN_PRIVILEGES tp = new TOKEN_PRIVILEGES
+        {
+            PrivilegeCount = 1,
+            Luid = luid,
+            Attributes = SE_PRIVILEGE_ENABLED
+        };
+
+        bool result = AdjustTokenPrivileges(tokenHandle, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero);
+        int err = Marshal.GetLastWin32Error();
+
+        Console.WriteLine(result ? "Imtiyoz yoqildi." : $"Xato: {err} (ERROR_NOT_ALL_ASSIGNED = 1300 bo'lsa, imtiyoz tokenda umuman yo'q)");
+    }
+}
